@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parichit Sharma · Application · Nemera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark:            #050505;
+  --surface-dark:       rgba(255,255,255,0.04);
+  --highlight-dark:     rgba(255,255,255,0.06);
+  --border-dark:        rgba(255,255,255,0.10);
+  --border-strong-dark: rgba(255,255,255,0.18);
+  --text-dark:          #f5f5f5;
+  --text-dark-subtle:   rgba(255,255,255,0.62);
+  --text-dark-faint:    rgba(255,255,255,0.38);
+  --dot-dark:           rgba(250,250,250,0.07);
+
+  --bg-light:           #f5f7fb;
+  --surface-light:      rgba(245,249,255,0.55);
+  --highlight-light:    #ffffff;
+  --border-light:       rgba(0,76,153,0.12);
+  --border-strong-light:rgba(0,76,153,0.22);
+  --text-light:         #0a1a2e;
+  --text-light-subtle:  #3d5878;
+  --text-light-faint:   #6b82a1;
+  --dot-light:          rgba(0,76,153,0.12);
+
+  --blue-50:  #e2efff;
+  --blue-100: #bddcff;
+  --blue-200: #8bc2ff;
+  --blue-300: #60a5fa;
+  --blue-400: #2c7de0;
+  --blue:     #0071e3;
+  --blue-hover:#0077ed;
+  --blue-600: #0056b3;
+  --blue-700: #004a99;
+  --blue-800: #002b66;
+
+  --shadow-premium: 0 12px 40px -16px rgba(0,86,179,0.35), 0 2px 8px -4px rgba(0,31,74,0.2);
+
+  --s-1:8px;  --s-2:16px; --s-3:24px; --s-4:32px;
+  --s-5:40px; --s-6:48px; --s-7:56px; --s-8:64px;
+  --s-9:72px; --s-10:80px;--s-11:96px;--s-12:112px;
+
+  --radius-sm:  16px;
+  --radius-md:  24px;
+  --radius-pill:980px;
+  --max-w:      1100px;
+}
+
+html[data-theme="light"] {
+  --bg-dark:            var(--bg-light);
+  --surface-dark:       var(--surface-light);
+  --highlight-dark:     var(--highlight-light);
+  --border-dark:        var(--border-light);
+  --border-strong-dark: var(--border-strong-light);
+  --text-dark:          var(--text-light);
+  --text-dark-subtle:   var(--text-light-subtle);
+  --text-dark-faint:    var(--text-light-faint);
+  --dot-dark:           var(--dot-light);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "cv02","cv03","cv04","cv11","ss01";
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -20;
+  background-color: var(--bg-dark);
+  background-image:
+    radial-gradient(ellipse 70% 90% at 15% -10%, rgba(0,113,227,0.16), transparent 62%),
+    radial-gradient(ellipse 50% 70% at 90% -20%, rgba(44,125,224,0.10), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 110%, rgba(0,86,179,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: -10; opacity: 0.55;
+  background-image:
+    radial-gradient(circle at 25% 25%, var(--dot-dark) 0.65px, transparent 1px),
+    radial-gradient(circle at 75% 75%, var(--dot-dark) 0.65px, transparent 1px);
+  background-size: 14px 14px;
+  pointer-events: none;
+}
+
+.grain {
+  position: fixed; inset: 0; z-index: -5;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+html[data-theme="light"] .grain { opacity: 0.05; mix-blend-mode: multiply; }
+
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--blue-200), var(--blue), var(--blue-700));
+  z-index: 10000;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 10px rgba(0,113,227,0.5);
+}
+
+/* NAV */
+nav {
+  position: fixed; top: var(--s-3); left: 50%; transform: translateX(-50%);
+  z-index: 9000;
+  display: flex; align-items: center; gap: var(--s-5);
+  background: rgba(10,10,12,0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  padding: 0 var(--s-4);
+  height: 44px;
+  white-space: nowrap;
+}
+html[data-theme="light"] nav { background: rgba(245,247,251,0.82); }
+
+.nav-brand {
+  font-size: 13px; font-weight: 600; color: var(--text-dark);
+  text-decoration: none; letter-spacing: -0.01em;
+}
+.nav-brand span { color: var(--blue-300); font-weight: 400; }
+
+.nav-links { display: flex; align-items: center; gap: var(--s-4); list-style: none; }
+.nav-links a {
+  font-size: 13px; font-weight: 500;
+  color: var(--text-dark); opacity: 0.55;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover, .nav-links a.is-active { opacity: 1; }
+
+/* ACCENT */
+.accent {
+  background: linear-gradient(135deg, var(--blue-200) 0%, var(--blue) 60%, var(--blue-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html[data-theme="light"] .accent {
+  background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: var(--s-12) var(--s-4) var(--s-10);
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--blue-200);
+  border: 1px solid rgba(139,194,255,0.28);
+  border-radius: var(--radius-pill);
+  padding: 7px 20px;
+  margin-bottom: var(--s-4);
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5.6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  max-width: 18ch;
+  margin-bottom: var(--s-5);
+}
+
+.hero-ctas {
+  display: flex; align-items: center; gap: var(--s-3);
+  flex-wrap: wrap; justify-content: center;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  padding: 11px 26px;
+  border-radius: var(--radius-pill);
+  font-size: 15px; font-weight: 500;
+  text-decoration: none;
+  border: none; cursor: pointer;
+  transition: background 0.25s;
+}
+.btn-primary:hover { background: var(--blue-hover); }
+
+.btn-outline {
+  display: inline-block;
+  background: var(--surface-dark);
+  color: var(--text-dark-subtle);
+  padding: 10px 22px;
+  border-radius: var(--radius-pill);
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--border-dark);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: var(--border-strong-dark); color: var(--text-dark); }
+
+/* CAPABILITY CARDS */
+.cap-grid-label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--text-dark-faint);
+  margin-top: var(--s-9);
+  margin-bottom: var(--s-3);
+}
+
+.cap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+  max-width: var(--max-w);
+  width: 100%;
+  margin-top: var(--s-9);
+}
+
+.cap-card {
+  background: var(--surface-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  padding: var(--s-5) var(--s-4);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.cap-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle 120px at var(--spot-x, 50%) var(--spot-y, 50%), rgba(0,113,227,0.14), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.cap-card:hover::before { opacity: 1; }
+.cap-card:hover { border-color: rgba(0,113,227,0.30); box-shadow: var(--shadow-premium); }
+
+.cap-index {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--blue-200);
+  margin-bottom: var(--s-2);
+}
+.cap-label {
+  font-size: 15px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: var(--s-2);
+}
+.cap-body {
+  font-size: 14px; font-weight: 400;
+  color: var(--text-dark-subtle);
+  line-height: 1.55;
+}
+
+/* ORNAMENT */
+.ornament {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  opacity: 0.5;
+}
+.ornament__line {
+  width: 60px; height: 1px;
+  background: var(--border-dark);
+}
+.ornament__dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--blue-300);
+}
+
+/* SECTIONS */
+section {
+  padding: var(--s-9) var(--s-4);
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--s-8);
+}
+
+.section-heading {
+  font-size: clamp(1.875rem, 3.6vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  color: var(--text-dark);
+}
+
+/* RESEARCH / FINDINGS */
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+}
+
+.finding-card {
+  background: var(--surface-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  padding: var(--s-5) var(--s-4);
+  min-height: 240px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.finding-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(circle 130px at var(--spot-x, 50%) var(--spot-y, 50%), rgba(0,113,227,0.13), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.finding-card:hover::before { opacity: 1; }
+.finding-card:hover { border-color: rgba(0,113,227,0.30); box-shadow: var(--shadow-premium); }
+
+.finding-index {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--blue-200);
+  margin-bottom: var(--s-3);
+}
+.finding-title {
+  font-size: 17px; font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: var(--s-2);
+  line-height: 1.3;
+}
+.finding-body {
+  font-size: 14px;
+  color: var(--text-dark-subtle);
+  line-height: 1.58;
+}
+
+/* CASE STUDIES */
+.case-study {
+  padding: var(--s-8) 0;
+  border-bottom: 1px solid var(--border-dark);
+}
+.case-study:first-child { border-top: 1px solid var(--border-dark); }
+
+.case-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.case-title {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-dark);
+  margin-bottom: var(--s-2);
+}
+.case-body {
+  font-size: 14px;
+  color: var(--text-dark-subtle);
+  line-height: 1.58;
+  margin-bottom: var(--s-2);
+}
+.case-meta {
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dark-faint);
+}
+
+.metrics-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.metric__value {
+  font-size: clamp(2.25rem, 3.8vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: var(--s-1);
+  background: linear-gradient(135deg, var(--blue-200) 0%, var(--blue) 60%, var(--blue-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html[data-theme="light"] .metric__value {
+  background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.metric__label {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+.metric__sub {
+  font-size: 12px;
+  color: var(--text-dark-faint);
+}
+
+/* EXPERIENCE TIMELINE */
+.timeline-item {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--s-4);
+  padding: var(--s-5) 0;
+  border-bottom: 1px solid var(--border-dark);
+}
+.timeline-item:first-child { border-top: 1px solid var(--border-dark); }
+
+.timeline-date {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--blue-200);
+  padding-top: 2px;
+}
+
+.timeline-role {
+  font-size: 17px; font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+.timeline-company {
+  font-size: 14px;
+  color: var(--text-dark-subtle);
+  margin-bottom: var(--s-1);
+}
+.timeline-body {
+  font-size: 13px;
+  color: var(--text-dark-faint);
+  line-height: 1.55;
+}
+
+/* CONTACT */
+#contact {
+  text-align: center;
+  padding: var(--s-12) var(--s-4);
+}
+
+.rotate-headline {
+  font-size: clamp(1.875rem, 3.6vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin-bottom: var(--s-6);
+  text-align: center;
+}
+
+.rotate-words {
+  display: block;
+  position: relative;
+  height: 1.2em;
+  overflow: hidden;
+  min-width: 18ch;
+  width: 18ch;
+  max-width: 100%;
+}
+
+.rotate-word {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%) translateY(110%);
+  background: linear-gradient(135deg, var(--blue-200) 0%, var(--blue) 60%, var(--blue-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: transform 0.55s cubic-bezier(0.33,1,0.68,1), opacity 0.55s;
+  opacity: 0;
+  white-space: nowrap;
+}
+html[data-theme="light"] .rotate-word {
+  background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.rotate-word.is-active { transform: translateX(-50%) translateY(0); opacity: 1; }
+.rotate-word.is-past  { transform: translateX(-50%) translateY(-110%); opacity: 0; }
+
+.contact-ctas {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--s-3); flex-wrap: wrap;
+}
+
+/* FOOTER */
+footer {
+  padding: var(--s-6) var(--s-4) var(--s-8);
+  text-align: center;
+  border-top: 1px solid var(--border-dark);
+}
+
+.footer-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--s-2); flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-dark-subtle);
+  margin-bottom: var(--s-2);
+}
+.footer-dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--text-dark-faint);
+  flex-shrink: 0;
+}
+.footer-auth {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.auth-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+  flex-shrink: 0;
+}
+.footer-year {
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--text-dark-faint);
+}
+footer a { color: inherit; text-decoration: none; }
+footer a:hover { color: var(--text-dark); }
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.25,0.46,0.45,0.94),
+              transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 734px) {
+  .cap-grid { grid-template-columns: 1fr; }
+  .research-grid { grid-template-columns: 1fr; }
+  .case-inner { grid-template-columns: 1fr; gap: var(--s-5); }
+  .metrics-block { grid-template-columns: 1fr 1fr; }
+  .timeline-item { grid-template-columns: 1fr; gap: var(--s-1); }
+  nav { gap: var(--s-3); padding: 0 var(--s-3); }
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.25rem; }
+}
+
+@media (min-width: 735px) and (max-width: 1068px) {
+  .cap-grid { grid-template-columns: 1fr 1fr; }
+  .research-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .scroll-progress { display: none; }
+  .rotate-word { transition: none; }
+  * { transition-duration: 0.001ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<nav aria-label="Page navigation">
+  <a href="#" class="nav-brand">Parichit Sharma <span>· Application for Nemera</span></a>
+  <ul class="nav-links">
+    <li><a href="#fit">Fit</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#landscape">Landscape</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-eyebrow" aria-label="Document type">Job Application · Communication Coordinator · Nemera · Lyon</div>
+
+  <h1>B2B comms built for <span class="accent">complex products.</span></h1>
+
+  <div class="hero-ctas">
+    <a href="#fit" class="btn-primary">See the brief ↓</a>
+    <button class="btn-outline" id="themeToggle" aria-label="Toggle colour theme">
+      <span id="themeLabel">Light mode</span>
+    </button>
+  </div>
+
+  <div class="cap-grid-label">Three capabilities I bring</div>
+  <div class="cap-grid">
+    <div class="cap-card reveal">
+      <p class="cap-index">01</p>
+      <p class="cap-label">Multi-Market Execution</p>
+      <p class="cap-body">CMS, newsletters, and landing pages across 6 EMEA markets at Global Blue.</p>
+    </div>
+    <div class="cap-card reveal" style="transition-delay:0.1s">
+      <p class="cap-index">02</p>
+      <p class="cap-label">LinkedIn &amp; Editorial</p>
+      <p class="cap-body">8-month editorial calendar, 6 product launches, 25% engagement lift at Upfluence.</p>
+    </div>
+    <div class="cap-card reveal" style="transition-delay:0.2s">
+      <p class="cap-index">03</p>
+      <p class="cap-label">Event Coordination</p>
+      <p class="cap-body">Tradeshow presence across DACH and Benelux, 32% visibility improvement at Global Blue.</p>
+    </div>
+  </div>
+</section>
+
+<div class="ornament" aria-hidden="true">
+  <div class="ornament__line"></div>
+  <div class="ornament__dot"></div>
+  <div class="ornament__line"></div>
+</div>
+
+<!-- FIT / RESEARCH -->
+<section id="research">
+  <div class="inner">
+    <div class="section-header reveal">
+      <h2 class="section-heading">What I've noticed about <span class="accent">Nemera.</span></h2>
+    </div>
+
+    <div class="research-grid">
+      <div class="finding-card reveal">
+        <p class="finding-index">Finding 01</p>
+        <p class="finding-title">New franchises mean new messaging demands.</p>
+        <p class="finding-body">Symbioze, Penvario, and UniSpray each enter B2B channels where pharma clients need more than specs. More device lines mean higher coordination load on the comms function.</p>
+      </div>
+      <div class="finding-card reveal" style="transition-delay:0.1s">
+        <p class="finding-index">Finding 02</p>
+        <p class="finding-title">LinkedIn runs on product announcements.</p>
+        <p class="finding-body">Nemera's LinkedIn is consistent and active. The next layer — customer proof points, franchise thought leadership — is where external credibility compounds with pharma partners.</p>
+      </div>
+      <div class="finding-card reveal" style="transition-delay:0.2s">
+        <p class="finding-index">Finding 03</p>
+        <p class="finding-title">Tradeshows are load-bearing.</p>
+        <p class="finding-body">Interphex, ARVO, CPhI — the event calendar is dense and global. The coordinator role sits at the centre of concept, messaging, and on-site execution across multiple franchises.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament" aria-hidden="true">
+  <div class="ornament__line"></div>
+  <div class="ornament__dot"></div>
+  <div class="ornament__line"></div>
+</div>
+
+<!-- LANDSCAPE -->
+<section id="landscape">
+  <div class="inner">
+    <div class="section-header reveal">
+      <h2 class="section-heading">The <span class="accent">landscape.</span></h2>
+    </div>
+
+    <div class="research-grid">
+      <div class="finding-card reveal">
+        <p class="finding-index">SHL Medical</p>
+        <p class="finding-title">Auto-injector CDMO with global reach.</p>
+        <p class="finding-body">SHL is Nemera's closest rival on combination products — strong in auto-injectors, active at the same pharma tradeshows. Their comms lean technical. Nemera's patient-first narrative is the sharper public angle.</p>
+      </div>
+      <div class="finding-card reveal" style="transition-delay:0.1s">
+        <p class="finding-index">Aptar Pharma</p>
+        <p class="finding-title">Heavier content and digital presence.</p>
+        <p class="finding-body">Aptar invests more visibly in thought leadership — white papers, webinars, structured LinkedIn campaigns. Their content cadence is faster. Closing that gap is one of the clearest communication opportunities for Nemera.</p>
+      </div>
+      <div class="finding-card reveal" style="transition-delay:0.2s">
+        <p class="finding-index">Owen Mumford</p>
+        <p class="finding-title">Design-led positioning, similar customer base.</p>
+        <p class="finding-body">Owen Mumford targets the same pharma clients with a design-led narrative and a polished visual identity. Their tradeshow materials and website are consistently well-produced. A benchmark worth tracking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament" aria-hidden="true">
+  <div class="ornament__line"></div>
+  <div class="ornament__dot"></div>
+  <div class="ornament__line"></div>
+</div>
+
+<!-- WORK -->
+<section id="work">
+  <div class="inner">
+    <div class="section-header reveal">
+      <h2 class="section-heading">Where the numbers <span class="accent">landed.</span></h2>
+    </div>
+
+    <div class="case-study reveal">
+      <div class="case-inner">
+        <div>
+          <p class="case-title">Six EMEA markets. One message.</p>
+          <p class="case-body">CMS copy, tradeshow coordination, and ABM messaging for Global Blue across DACH, Denmark, and the Netherlands — serving Chanel, Prada, and 200+ luxury retail partners. Built 15 multi-market performance dashboards (ROAS, CTR, CPA) that cut decision cycles by 21%.</p>
+          <p class="case-meta">Global Blue · Paris · 2025</p>
+        </div>
+        <div class="metrics-block">
+          <div>
+            <p class="metric__value" data-value="250" data-prefix="€" data-suffix="K">€250K</p>
+            <p class="metric__label">Incremental revenue</p>
+            <p class="metric__sub">+24.6% ROI on content</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="3200">3,200</p>
+            <p class="metric__label">Partner interactions</p>
+            <p class="metric__sub">Across 6 EMEA markets</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="32" data-suffix="%">32%</p>
+            <p class="metric__label">Tradeshow visibility gain</p>
+            <p class="metric__sub">DACH + Benelux events</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="19" data-suffix="%">19%</p>
+            <p class="metric__label">Target-account engagement</p>
+            <p class="metric__sub">ABM with Chanel &amp; Prada</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-study reveal">
+      <div class="case-inner">
+        <div>
+          <p class="case-title">Product launch comms at pace.</p>
+          <p class="case-body">Owned an 8-month editorial calendar aligned to 6 product launches for Upfluence. Produced 21+ content assets and 23 SEO-optimised feature pages. PR support for corporate announcements lifted quarterly revenue by €160K.</p>
+          <p class="case-meta">Upfluence · Lyon · 2024</p>
+        </div>
+        <div class="metrics-block">
+          <div>
+            <p class="metric__value" data-value="25" data-suffix="%">25%</p>
+            <p class="metric__label">Content engagement lift</p>
+            <p class="metric__sub">Blog + LinkedIn</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="160" data-prefix="€" data-suffix="K">€160K</p>
+            <p class="metric__label">Revenue from PR support</p>
+            <p class="metric__sub">+12% quarterly uplift</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="21" data-suffix="%">21%</p>
+            <p class="metric__label">Online engagement lift</p>
+            <p class="metric__sub">23 product pages</p>
+          </div>
+          <div>
+            <p class="metric__value" data-value="73">73</p>
+            <p class="metric__label">Enterprise clients</p>
+            <p class="metric__sub">France + APAC</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament" aria-hidden="true">
+  <div class="ornament__line"></div>
+  <div class="ornament__dot"></div>
+  <div class="ornament__line"></div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="inner">
+    <div class="section-header reveal">
+      <h2 class="section-heading">Experience</h2>
+    </div>
+
+    <div class="timeline-item reveal">
+      <p class="timeline-date">2025 – Present</p>
+      <div>
+        <p class="timeline-role">B2B Communication Consultant</p>
+        <p class="timeline-company">Emergence Software · Paris</p>
+        <p class="timeline-body">Communication playbooks, performance dashboards, web copy — 4 B2B software clients.</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <p class="timeline-date">Feb – May 2025</p>
+      <div>
+        <p class="timeline-role">Associate Digital Marketing Manager</p>
+        <p class="timeline-company">Global Blue · Paris</p>
+        <p class="timeline-body">CMS, tradeshow, ABM, newsletters, KPI dashboards — EMEA.</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <p class="timeline-date">2024</p>
+      <div>
+        <p class="timeline-role">Associate Product Marketing Manager</p>
+        <p class="timeline-company">Upfluence · Lyon</p>
+        <p class="timeline-body">Editorial calendar, SEO copy, product launch comms, PR support.</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <p class="timeline-date">2019 – 2023</p>
+      <div>
+        <p class="timeline-role">Business Development &amp; Growth Manager</p>
+        <p class="timeline-company">ARTH · New Delhi</p>
+        <p class="timeline-body">B2B content strategy, 9 markets — London Business School Real Innovation Award.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament" aria-hidden="true">
+  <div class="ornament__line"></div>
+  <div class="ornament__dot"></div>
+  <div class="ornament__line"></div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="inner">
+    <div class="reveal">
+      <div class="rotate-headline">
+        <div>Communication that is</div>
+        <div style="display:flex; justify-content:center;">
+          <div class="rotate-words" aria-live="polite" style="display:block; height:1.2em; overflow:hidden; position:relative; min-width:12ch; max-width:100%;">
+            <span class="rotate-word" data-word="consistent">consistent</span>
+            <span class="rotate-word" data-word="clear">clear</span>
+            <span class="rotate-word" data-word="coordinated">coordinated</span>
+            <span class="rotate-word" data-word="credible">credible</span>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:15px; color:var(--text-dark-subtle); max-width:52ch; margin:0 auto var(--s-6); line-height:1.6;">
+        I am based in Lyon and fully authorised to work in France. Happy to talk about the role — or about what Nemera's communication function looks like in 12 months.
+      </p>
+
+      <div class="contact-ctas">
+        <a href="#" class="btn-primary" id="emailBtn">Send an email</a>
+        <a href="https://linkedin.com/in/parichit" target="_blank" rel="noopener" class="btn-outline">LinkedIn →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-row">
+    <span>Parichit Sharma</span>
+    <div class="footer-dot"></div>
+    <a href="tel:+33752983575">+33 7 52 98 35 75</a>
+    <div class="footer-dot"></div>
+    <span class="footer-auth">
+      <span class="auth-dot"></span>
+      Authorised to work in France
+    </span>
+  </div>
+
+</footer>
+
+<script>
+// Theme toggle
+(function() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+  function update() {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
+  }
+  update();
+  btn.addEventListener('click', function() {
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+    update();
+  });
+})();
+
+// Email obfuscation (Cloudflare-safe)
+(function() {
+  const btn = document.getElementById('emailBtn');
+  const u = 'sparichit6';
+  const d = 'gmail.com';
+  const href = 'mailto:' + u + '\x40' + d + '?subject=Communication%20Coordinator%20%E2%80%94%20Nemera%20Application';
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = href;
+  });
+})();
+
+// Scroll progress
+(function() {
+  const bar = document.getElementById('scrollProgress');
+  function onScroll() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// Scroll reveal
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  els.forEach(function(el) { obs.observe(el); });
+})();
+
+// Spotlight on cards
+(function() {
+  document.querySelectorAll('.cap-card, .finding-card').forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--spot-x', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--spot-y', (e.clientY - rect.top) + 'px');
+    });
+  });
+})();
+
+// Rotating words
+(function() {
+  const words = document.querySelectorAll('.rotate-word');
+  if (!words.length) return;
+  let cur = 0;
+  words[cur].classList.add('is-active');
+
+  setInterval(function() {
+    const prev = cur;
+    cur = (cur + 1) % words.length;
+    words[prev].classList.remove('is-active');
+    words[prev].classList.add('is-past');
+    words[cur].classList.add('is-active');
+    setTimeout(function() { words[prev].classList.remove('is-past'); }, 600);
+  }, 2400);
+})();
+
+// Count-up metrics
+(function() {
+  const metrics = document.querySelectorAll('[data-value]');
+  if (!metrics.length) return;
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.value);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        const val = Math.round(target * ease);
+        el.textContent = prefix + val.toLocaleString() + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + target.toLocaleString() + suffix;
+      }
+      requestAnimationFrame(tick);
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  metrics.forEach(function(m) { obs.observe(m); });
+})();
+
+// Nav active state
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        links.forEach(function(a) { a.classList.remove('is-active'); });
+        const active = document.querySelector('.nav-links a[href="#' + entry.target.id + '"]');
+        if (active) active.classList.add('is-active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(function(s) { obs.observe(s); });
+})();
+</script>
+</body>
+</html>
